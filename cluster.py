@@ -4,15 +4,6 @@ import datetime
 import time
 from threading import Thread
 
-app = Flask(__name__)
-
-@app.route("/")
-
-def hello():
-    return "Hello World!"
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
 
 def init_serial():
     read_frequency = 0.1
@@ -28,3 +19,13 @@ receive_function()
 
 receive_dataThread = Thread( target = receive_function, args = ())
 #  receive_dataThread.start()
+
+app = Flask(__name__)
+
+@app.route("/")
+
+def hello():
+    return "Hello World!"
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
