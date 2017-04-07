@@ -6,7 +6,7 @@ import sqlite3
 from threading import Thread
 import json
 
-database_connection = sqlite3.connect('transmission_test.db')
+database_connection = sqlite3.connect('transmission_test_cluster.db')
 app_c = database_connection.cursor() 
 
 try:
@@ -35,7 +35,7 @@ def receive_function():
     database_connection = sqlite3.connect('transmission_test.db')
     serial_c = database_connection.cursor() 
     read_frequency = 0.1
-    cluster = serial.Serial('/dev/ttyS0', '115200', timeout = read_frequency, writeTimeout = 0)
+    cluster = serial.Serial('/dev//dev/ttyAMA0', '115200', timeout = read_frequency, writeTimeout = 0)
     #  cluster = serial.Serial('/dev/cu.wchusbserial14110', '115200', timeout = read_frequency, writeTimeout = 0)
 
     print("初始化串口...")
