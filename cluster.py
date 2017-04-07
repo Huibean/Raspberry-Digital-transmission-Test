@@ -39,13 +39,17 @@ def receive_function():
     print("初始化串口...")
 
     while True:
+        if cluster.inWaiting() > 0:
+            print("buffer length: ", cluster.inWaiting())
+
         data = cluster.read(70)
+
         if (len(data) == 70):
             print(data)
             later_time = datetime.datetime.now().strftime('%M:%S.%f')
             test_id, former_time, pack_data = data.decode("utf-8").split("-")
             delay = cal_delay(former_time, later_time)
-            write_record(serial_c, int(test_data), delay)
+            write_record(serial_c, int(test_id), delay)
 
 receive_dataThread = Thread( target = receive_function, args = ())
 receive_dataThread.start()
