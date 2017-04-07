@@ -1,3 +1,4 @@
+from flask import Flask
 import serial
 import datetime
 import time
@@ -5,10 +6,10 @@ import sqlite3
 from threading import Thread
 
 database_connection = sqlite3.connect('transmission_test.db')
-serial_c = database_connection.cursor() 
+c = database_connection.cursor() 
 
 try:
-    serial_c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
+    c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
 except Exception as e:
     pass
 
@@ -40,9 +41,20 @@ def receive_function(c):
             later_time = datetime.datetime.now().strftime('%M:%S.%f')
             test_id, former_time, pack_data = data.decode("utf-8").split("-")
             delay = cal_delay(former_time, later_time)
+            write_record(c, int(test_data), delay)
+            #  write_thread = Thread( target = write_record, args = (c, int(test_data), delay))
+            #  write_thread.start()
 
-            write_thread = Thread( target = write_record, args = (int(test_data), delay))
-            write_thread.start()
-
-receive_dataThread = Thread( target = receive_function, args = (serial_c))
+receive_dataThread = Thread( target = receive_function, args = (c))
 receive_dataThread.start()
+
+app = Flask(__name__)
+
+@app.route("/get_records")
+
+def get_records():
+    for row in c.execute('SELECT * FROM test_results'):
+        print(row)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
