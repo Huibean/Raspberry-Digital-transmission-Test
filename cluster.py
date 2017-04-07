@@ -6,10 +6,11 @@ import sqlite3
 from threading import Thread
 
 database_connection = sqlite3.connect('transmission_test.db')
-c = database_connection.cursor() 
+serial_c = database_connection.cursor() 
+app_c = database_connection.cursor()
 
 try:
-    c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
+    app_c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
 except Exception as e:
     pass
 
@@ -45,7 +46,7 @@ def receive_function(c):
             write_thread = Thread( target = write_record, args = (int(test_data), delay))
             write_thread.start()
 
-receive_dataThread = Thread( target = receive_function, args = (c))
+receive_dataThread = Thread( target = receive_function, args = (serial_c))
 receive_dataThread.start()
 
 app = Flask(__name__)
