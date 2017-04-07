@@ -4,16 +4,18 @@ import datetime
 import time
 import sqlite3
 from threading import Thread
+import json
 
 database_connection = sqlite3.connect('transmission_test.db')
 app_c = database_connection.cursor() 
 
 try:
-    c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
+    app_c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
 except Exception as e:
     pass
 
 def write_record(serial_c, test_id, delay):
+    print("write data, id: ", test_id, " delay: ", delay)
     serial_c.execute("INSERT INTO test_results VALUES (?,?,?)", (test_id, delay, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
 def cal_delay(former_time, later_time):
@@ -56,11 +58,14 @@ receive_dataThread.start()
 
 app = Flask(__name__)
 
-@app.route("/get_records")
+@app.route("/get_records/<id>", methods = ['GET'])
 
-def get_records():
-    for row in c.execute('SELECT * FROM test_results'):
-        print(row)
+def get_records(id):
+    data = {"results": []}
+    for row in app_c.execute('SELECT * FROM test_results WHERE test_id=:test_id', {"test_id": id}):
+        data["results"].append(row)
+
+    return json.dumps(data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
