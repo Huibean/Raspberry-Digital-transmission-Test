@@ -6,15 +6,15 @@ import sqlite3
 from threading import Thread
 
 database_connection = sqlite3.connect('transmission_test.db')
-c = database_connection.cursor() 
+app_c = database_connection.cursor() 
 
 try:
     c.execute('''CREATE TABLE test_results (test_id integer, delay real, date text)''')
 except Exception as e:
     pass
 
-def write_record(c, test_id, delay):
-    c.execute("INSERT INTO test_results VALUES (?,?,?)", (test_id, delay, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+def write_record(serial_c, test_id, delay):
+    serial_c.execute("INSERT INTO test_results VALUES (?,?,?)", (test_id, delay, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
 def cal_delay(former_time, later_time):
     former_m, former_s = map(lambda item: float(item), former_time.split(":")) 
@@ -31,9 +31,11 @@ def cal_delay(former_time, later_time):
 
 def receive_function():
     database_connection = sqlite3.connect('transmission_test.db')
-    c = database_connection.cursor() 
+    serial_c = database_connection.cursor() 
     read_frequency = 0.1
     cluster = serial.Serial('/dev/ttyS0', '115200', timeout = read_frequency, writeTimeout = 0)
+    #  cluster = serial.Serial('/dev/cu.wchusbserial14110', '115200', timeout = read_frequency, writeTimeout = 0)
+
     print("初始化串口...")
 
     while True:
@@ -43,11 +45,9 @@ def receive_function():
             later_time = datetime.datetime.now().strftime('%M:%S.%f')
             test_id, former_time, pack_data = data.decode("utf-8").split("-")
             delay = cal_delay(former_time, later_time)
-            write_record(c, int(test_data), delay)
-            #  write_thread = Thread( target = write_record, args = (c, int(test_data), delay))
-            #  write_thread.start()
+            write_record(serial_c, int(test_data), delay)
 
-receive_dataThread = Thread( target = receive_function, args = (c))
+receive_dataThread = Thread( target = receive_function, args = ())
 receive_dataThread.start()
 
 app = Flask(__name__)
