@@ -4,73 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>SkyPix 数传测试</title>
-    <script src="/highcharts.js"></script>
-    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'w3.css') }}">
+    <script src="{{ url_for('static', filename = 'highcharts.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'jquery-3.2.0.min.js') }}"></script>
   </head>
   <body>
-    <button value="Run Test" />
-    <div id="container" style="width:100%; height:400px;"></div>
-    <script type="text/javascript" charset="utf-8">
-      Highcharts.chart('container', {
-          chart: {
-              type: 'area',
-              spacingBottom: 30
-          },
-          title: {
-              text: '数传测试'
-          },
-          subtitle: {
-              text: '* Jane\'s banana consumption is unknown',
-              floating: true,
-              align: 'right',
-              verticalAlign: 'bottom',
-              y: 15
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'left',
-              verticalAlign: 'top',
-              x: 150,
-              y: 100,
-              floating: true,
-              borderWidth: 1,
-              backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-          },
-          xAxis: {
-              categories: ['Apples', 'Pears', 'Oranges', 'Bananas', 'Grapes', 'Plums', 'Strawberries', 'Raspberries']
-          },
-          yAxis: {
-              title: {
-                  text: 'Y-Axis'
-              },
-              labels: {
-                  formatter: function () {
-                      return this.value;
-                  }
-              }
-          },
-          tooltip: {
-              formatter: function () {
-                  return '<b>' + this.series.name + '</b><br/>' +
-                      this.x + ': ' + this.y;
-              }
-          },
-          plotOptions: {
-              area: {
-                  fillOpacity: 0.5
-              }
-          },
-          credits: {
-              enabled: false
-          },
-          series: [{
-              name: 'John',
-              data: [0, 1, 4, 4, 5, 2, 3, 7]
-          }, {
-              name: 'Jane',
-              data: [1, 0, 3, null, 3, 1, 2, 1]
-          }]
-      });
-    </script>
+      <div style="width:100%; height:10px;">
+      </div>
+      <div style="width:100%; height:70px; display: flex; justify-content: center;">
+        <form action="run_test" method="post" accept-charset="utf-8">
+          <button class="w3-button w3-white w3-border w3-border-blue w3-round-large" type="submit">发起新测试</button>
+        </form>
+      </div>
+    {% for test in tests %}
+      <div id={{"container-%s"%test['test_id'] }} data-test-id= {{"%s"%test['test_id']}} class="container" style="width:100%; height:300px;">Loading...</div>
+    {% endfor %}
+
+    <script src="{{ url_for('static', filename = 'data.js') }}"></script>
   </body>
 </html>

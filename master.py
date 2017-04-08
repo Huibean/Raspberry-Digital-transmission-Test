@@ -7,6 +7,8 @@ from pymongo import MongoClient
 from threading import Thread
 import yaml
 
+clusters = ['1', '2', '3', '4']
+
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
@@ -41,13 +43,33 @@ def send_function(test_id):
     print("测试结束")
     master.close()
 
-app = Flask(__name__, static_folder='public', static_url_path='')
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public')
 
 @app.route("/", methods = ['GET'])
 
 def index():
-    return render_template('index.html')
+    tests = list(db.tests.find())
+    tests.reverse()
+
+    print("加载测试结果", tests)
+
+    return render_template('index.html', tests=tests)
+
+@app.route("/get_records/<test_id>", methods = ['GET'])
+
+def get_records(test_id):
+    print("处理请求测试数据, 测试ID", test_id)
+    data = []
+    for cluster_id in clusters:
+        cluster_item = { 'name': "Cluster %s"%cluster_id, 'data': [None for i in range(100)]}
+        records = list(db.records.find({'test_id': test_id, 'cluster_id': cluster_id}))
+        for record in records:
+            cluster_item['data'][int(record['message_index']) - 1] = float(record['delay'])
+        data.append(cluster_item)
+
+    print(data)
+
+    return json.dumps(data)
 
 @app.route("/run_test", methods = ['GET'])
 
