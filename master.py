@@ -52,7 +52,7 @@ def index():
 def run_test():
     test_id = len(list(app_c.execute('SELECT * FROM tests'))) + 1
 
-    app_c.execute("INSERT INTO test_records VALUES (?,?,?)", (test_id, 0, 0))
+    app_c.execute("INSERT INTO tests VALUES (?,?,?)", (test_id, 0, 0))
 
     #  send_dataThread = Thread( target = send_function, args = (test_id))
     #  send_dataThread.start()
@@ -67,6 +67,7 @@ def upload_record():
         test_id = request.args.get('test_id')
         index = request.args.get('index')
         delay = request.args.get('delay')
+        print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay)
         app_c.execute("INSERT INTO records VALUES (?,?,?)", (test_id, index, delay))
         return "success"
     except Exception as e:

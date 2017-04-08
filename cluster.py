@@ -4,15 +4,21 @@ import datetime
 import time
 from threading import Thread
 import requests
+import yaml
+
+with open("config.yml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+cluster_id = cfg['cluster_id'] 
 
 #  master_server = "192.168.0.133:5000/"
 master_server = "192.168.0.100:5000/"
 upload_record_path = master_server + "upload_record"
 
 
-def write_record(test_id, index, delay):
-    print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay)
-    r = requests.post(upload_record_path, data={"test_id": test_id, "index": index, "delay": delay})
+def write_record(test_id, index, delay, cluster_id):
+    print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
+    r = requests.post(upload_record_path, data={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
     print("写入结果", r.stats_code, r.content)
 
 def cal_delay(former_time, later_time):
@@ -28,7 +34,7 @@ def cal_delay(former_time, later_time):
 
     return delay
 
-def receive_function():
+def receive_function(cluster_id):
     print("初始化串口...")
     read_frequency = 0.1
     cluster = serial.Serial('/dev/ttyAMA0', '38400', timeout = read_frequency, writeTimeout = 0)
@@ -49,13 +55,13 @@ def receive_function():
                 test_id, index, former_time, pack_data = data.decode("utf-8").split("-")
                 delay = cal_delay(former_time, later_time)
 
-                write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay))
+                write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay), cluster_id)
                 write_record_thread.start()
             except Exception as e:
                 pass
                 cluster.close()
-                receive_function()
+                receive_function(cluster_id)
                 #  receive_dataThread = Thread( target = receive_function, args = ())
                 #  receive_dataThread.start()
 
-receive_function()
+receive_function(cluster_id)
