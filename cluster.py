@@ -38,34 +38,53 @@ def receive_function():
     cluster = serial.Serial('/dev/ttyAMA0', '38400', timeout = read_frequency, writeTimeout = 0)
     #  cluster = serial.Serial('/dev/cu.wchusbserial14110', '115200', timeout = read_frequency, writeTimeout = 0)
 
+    cluster.flushInput()
+
     print("初始化串口...")
+    
+    idle_count = 0
+    testing = False
 
     while True:
-        if cluster.inWaiting() > 0:
-            print("buffer length: ", cluster.inWaiting())
+        if idle_count == 0:
+            testing = True
+            cluster.flushInput()
 
-        data = cluster.read(70)
+        if cluster.inWaiting() == 0:
+            idle_count += 1
+            time.sleep(1)
+        else:
+            idle_count = 0
 
-        if (len(data) == 70):
-            print(data)
-            later_time = datetime.datetime.now().strftime('%M:%S.%f')
-            test_id, former_time, pack_data = data.decode("utf-8").split("-")
-            delay = cal_delay(former_time, later_time)
-            write_record(serial_c, int(test_id), delay)
+        if idle_count > 10000:
+            testing = False
+            print("进入休眠...")
+            time.sleep(2)
+            idle_count = 0
+
+        if testing:
+            data = cluster.read(70)
+
+            if (len(data) == 70):
+                print(data)
+                later_time = datetime.datetime.now().strftime('%M:%S.%f')
+                test_id, index, former_time, pack_data = data.decode("utf-8").split("-")
+                delay = cal_delay(former_time, later_time)
+                write_record(serial_c, int(test_id), delay)
 
 receive_dataThread = Thread( target = receive_function, args = ())
 receive_dataThread.start()
 
-app = Flask(__name__)
+#  app = Flask(__name__)
 
-@app.route("/get_records/<id>", methods = ['GET'])
+#  @app.route("/get_records/<id>", methods = ['GET'])
 
-def get_records(id):
-    data = {"results": []}
-    for row in app_c.execute('SELECT * FROM test_results WHERE test_id=:test_id', {"test_id": id}):
-        data["results"].append(row)
+#  def get_records(id):
+    #  data = {"results": []}
+    #  for row in app_c.execute('SELECT * FROM test_results WHERE test_id=:test_id', {"test_id": id}):
+        #  data["results"].append(row)
 
-    return json.dumps(data)
+    #  return json.dumps(data)
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+#  if __name__ == "__main__":
+    #  app.run(host='0.0.0.0')

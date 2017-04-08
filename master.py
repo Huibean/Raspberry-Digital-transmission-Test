@@ -10,19 +10,21 @@ database_connection = sqlite3.connect('transmission_test_master.db')
 app_c = database_connection.cursor() 
 
 try:
-    app_c.execute('''CREATE TABLE test_records (id integer, delay real, loss real)''')
+    app_c.execute('''CREATE TABLE IF NOT EXISTS test_records (id integer, delay real, loss real)''')
 except Exception as e:
     pass
 
 def send_function(test_id):
     read_frequency = 0.1
-    #  master = serial.Serial('/dev/ttyS0', '115200', timeout = read_frequency, writeTimeout = 0)
-    master = serial.Serial('/dev/cu.wchusbserial1420', '115200', timeout = read_frequency, writeTimeout = 0)
+    #  master = serial.Serial('/dev/ttyAMA0', '115200', timeout = read_frequency, writeTimeout = 0)
+    master = serial.Serial('/dev/cu.SLAB_USBtoUART', '38400', timeout = read_frequency, writeTimeout = 0)
+
+    master.flushOutput()
     print("初始化主机串口...")
-    i = 0
+    i = 1
     while True:
         time_now = datetime.datetime.now().strftime('%M:%S.%f')
-        data = str(test_id) + "-" + time_now + "-"
+        data = str(test_id) + "-" + str(i) + "-" + time_now + "-"
         for item in range(70 - len(data)):
             data += "0"
 
