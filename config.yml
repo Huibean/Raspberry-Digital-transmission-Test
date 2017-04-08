@@ -1,4 +1,0 @@
-cluster_id: 1
-mongodb_url: 'mongodb://admin:123456@ds155080.mlab.com:55080/raspberry_transmission_test'
-master_server: "http://192.168.0.100:5000/"
-serial_port: '/dev/cu.SLAB_USBtoUART'
