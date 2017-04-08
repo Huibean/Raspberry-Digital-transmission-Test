@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>SkyPix 数传测试</title>
+    <script src="/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+  </head>
+  <body>
+    <button value="Run Test" />
+    <div id="container" style="width:100%; height:400px;"></div>
+    <script type="text/javascript" charset="utf-8">
+      Highcharts.chart('container', {
+          chart: {
+              type: 'area',
+              spacingBottom: 30
+          },
+          title: {
+              text: '数传测试'
+          },
+          subtitle: {
+              text: '* Jane\'s banana consumption is unknown',
+              floating: true,
+              align: 'right',
+              verticalAlign: 'bottom',
+              y: 15
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'left',
+              verticalAlign: 'top',
+              x: 150,
+              y: 100,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+          },
+          xAxis: {
+              categories: ['Apples', 'Pears', 'Oranges', 'Bananas', 'Grapes', 'Plums', 'Strawberries', 'Raspberries']
+          },
+          yAxis: {
+              title: {
+                  text: 'Y-Axis'
+              },
+              labels: {
+                  formatter: function () {
+                      return this.value;
+                  }
+              }
+          },
+          tooltip: {
+              formatter: function () {
+                  return '<b>' + this.series.name + '</b><br/>' +
+                      this.x + ': ' + this.y;
+              }
+          },
+          plotOptions: {
+              area: {
+                  fillOpacity: 0.5
+              }
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'John',
+              data: [0, 1, 4, 4, 5, 2, 3, 7]
+          }, {
+              name: 'Jane',
+              data: [1, 0, 3, null, 3, 1, 2, 1]
+          }]
+      });
+    </script>
+  </body>
+</html>

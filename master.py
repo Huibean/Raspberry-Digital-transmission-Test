@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template
 import serial
 import datetime
 import time
+import json
 import sqlite3
 from threading import Thread
 
@@ -16,24 +17,32 @@ except Exception as e:
 def send_function(test_id):
     read_frequency = 0.1
     #  master = serial.Serial('/dev/ttyS0', '115200', timeout = read_frequency, writeTimeout = 0)
-    master = serial.Serial('/dev/cu.wchusbserial14110', '115200', timeout = read_frequency, writeTimeout = 0)
+    master = serial.Serial('/dev/cu.wchusbserial1420', '115200', timeout = read_frequency, writeTimeout = 0)
     print("初始化主机串口...")
     i = 0
     while True:
         time_now = datetime.datetime.now().strftime('%M:%S.%f')
         data = str(test_id) + "-" + time_now + "-"
-        for i in range(70 - len(data)):
+        for item in range(70 - len(data)):
             data += "0"
 
         master.write(data.encode("UTF-8"))
         time.sleep(0.1)
         i += 1
-        if i < 1000:
+        print("发送 NO." + str(i))
+        if i > 100:
             break
         
+    print("测试结束")
     master.close()
 
+app = Flask(__name__, static_folder='public', static_url_path='')
 app = Flask(__name__)
+
+@app.route("/", methods = ['GET'])
+
+def index():
+    return render_template('index.html')
 
 @app.route("/run_test", methods = ['GET'])
 
@@ -45,7 +54,7 @@ def run_test():
     #  send_dataThread = Thread( target = send_function, args = (test_id))
     #  send_dataThread.start()
     send_function(test_id)
-    return "Hello World!"
+    return json.dumps({"test_id": test_id})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
