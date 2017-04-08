@@ -11,8 +11,9 @@ with open("config.yml", 'r') as ymlfile:
 
 cluster_id = cfg['cluster_id'] 
 
-#  master_server = "192.168.0.133:5000/"
-master_server = "http://192.168.0.100:5000/"
+master_server = cfg['master_server']
+serial_port = cfg['serial_port']
+
 upload_record_path = master_server + "upload_record"
 
 
@@ -38,7 +39,7 @@ def receive_function(cluster_id):
     print("初始化串口...")
     read_frequency = 0.1
     cluster = serial.Serial('/dev/ttyAMA0', '38400', timeout = read_frequency, writeTimeout = 0)
-    #  cluster = serial.Serial('/dev/cu.wchusbserial14110', '115200', timeout = read_frequency, writeTimeout = 0)
+    #  cluster = serial.Serial(serial_port, '115200', timeout = read_frequency, writeTimeout = 0)
 
     cluster.flushInput()
 

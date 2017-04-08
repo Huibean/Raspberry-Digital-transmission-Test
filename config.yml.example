@@ -1,1 +1,4 @@
 cluster_id: 1
+mongodb_url: "xxxxxx"
+master_server: "http://192.168.0.100:5000/"
+serial_port: '/dev/ttyAMA0'
