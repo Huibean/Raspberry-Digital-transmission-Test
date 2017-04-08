@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import serial
 import datetime
 import time
@@ -10,7 +10,8 @@ database_connection = sqlite3.connect('transmission_test_master.db')
 app_c = database_connection.cursor() 
 
 try:
-    app_c.execute('''CREATE TABLE IF NOT EXISTS test_records (id integer, delay real, loss real)''')
+    app_c.execute('''CREATE TABLE IF NOT EXISTS tests (id integer, delay real, loss real)''')
+    app_c.execute('''CREATE TABLE IF NOT EXISTS records (test_id integer, index integer, delay real)''')
 except Exception as e:
     pass
 
@@ -49,7 +50,7 @@ def index():
 @app.route("/run_test", methods = ['GET'])
 
 def run_test():
-    test_id = len(list(app_c.execute('SELECT * FROM test_records'))) + 1
+    test_id = len(list(app_c.execute('SELECT * FROM tests'))) + 1
 
     app_c.execute("INSERT INTO test_records VALUES (?,?,?)", (test_id, 0, 0))
 
@@ -57,6 +58,19 @@ def run_test():
     #  send_dataThread.start()
     send_function(test_id)
     return json.dumps({"test_id": test_id})
+
+@app.route("/upload_record", methods = ['POST'])
+
+def upload_record():
+    print(request.args)
+    try:
+        test_id = request.args.get('test_id')
+        index = request.args.get('index')
+        delay = request.args.get('delay')
+        app_c.execute("INSERT INTO records VALUES (?,?,?)", (test_id, index, delay))
+        return "success"
+    except Exception as e:
+        return "fail"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
