@@ -19,7 +19,7 @@ upload_record_path = master_server + "upload_record"
 def write_record(test_id, index, delay, cluster_id):
     print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
     r = requests.post(upload_record_path, params={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
-    print("写入结果", r.stats_code, r.content)
+    print("写入结果", r.status_code, r.content)
 
 def cal_delay(former_time, later_time):
     former_m, former_s = map(lambda item: float(item), former_time.split(":")) 
