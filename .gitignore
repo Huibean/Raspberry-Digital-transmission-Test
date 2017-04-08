@@ -1,4 +1,3 @@
 transmission_test.db
 *db
-.config.json
-.config.yml
+config.yml
