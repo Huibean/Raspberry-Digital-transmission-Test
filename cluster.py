@@ -12,13 +12,13 @@ with open("config.yml", 'r') as ymlfile:
 cluster_id = cfg['cluster_id'] 
 
 #  master_server = "192.168.0.133:5000/"
-master_server = "192.168.0.100:5000/"
+master_server = "http://192.168.0.100:5000/"
 upload_record_path = master_server + "upload_record"
 
 
 def write_record(test_id, index, delay, cluster_id):
     print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
-    r = requests.post(upload_record_path, data={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
+    r = requests.post(upload_record_path, params={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
     print("写入结果", r.stats_code, r.content)
 
 def cal_delay(former_time, later_time):

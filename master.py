@@ -11,7 +11,7 @@ app_c = database_connection.cursor()
 
 try:
     app_c.execute('''CREATE TABLE IF NOT EXISTS tests (id integer, delay real, loss real)''')
-    app_c.execute('''CREATE TABLE IF NOT EXISTS records (test_id integer, index integer, delay real)''')
+    app_c.execute('''CREATE TABLE IF NOT EXISTS records (test_id integer, index integer, delay real, cluster_id)''')
 except Exception as e:
     pass
 
@@ -67,8 +67,9 @@ def upload_record():
         test_id = request.args.get('test_id')
         index = request.args.get('index')
         delay = request.args.get('delay')
-        print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay)
-        app_c.execute("INSERT INTO records VALUES (?,?,?)", (test_id, index, delay))
+        cluster_id = request.args.get('cluster_id')
+        print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, " cluster_id:" cluster_id)
+        app_c.execute("INSERT INTO records VALUES (?,?,?)", (test_id, index, delay, cluster_id))
         return "success"
     except Exception as e:
         return "fail"
