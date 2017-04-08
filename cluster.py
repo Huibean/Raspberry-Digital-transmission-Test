@@ -12,7 +12,7 @@ upload_record_path = master_server + "upload_record"
 
 def write_record(test_id, index, delay):
     print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay)
-    r = requests.get(upload_record_path, data={"test_id": test_id, "index": index, "delay": delay})
+    r = requests.post(upload_record_path, data={"test_id": test_id, "index": index, "delay": delay})
     print("写入结果", r.stats_code, r.content)
 
 def cal_delay(former_time, later_time):
@@ -53,6 +53,8 @@ def receive_function():
                 write_record_thread.start()
             except Exception as e:
                 pass
+                cluster.close()
+                receive_function()
                 #  receive_dataThread = Thread( target = receive_function, args = ())
                 #  receive_dataThread.start()
 

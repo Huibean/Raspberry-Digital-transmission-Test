@@ -33,7 +33,7 @@ def send_function(test_id):
         time.sleep(0.1)
         i += 1
         print("发送 NO." + str(i))
-        if i > 100:
+        if i >= 100:
             break
         
     print("测试结束")
