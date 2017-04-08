@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for 
 import serial
 import datetime
 import time
@@ -80,8 +80,10 @@ def run_test():
 
     send_dataThread = Thread( target = send_function, args = (str(test_id)))
     send_dataThread.start()
-    #  send_function(test_id)
-    return json.dumps({"test_id": test_id})
+
+    # send_function(test_id)
+
+    return redirect(url_for('index'))
 
 @app.route("/upload_record", methods = ['POST'])
 
