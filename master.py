@@ -54,9 +54,9 @@ def run_test():
 
     app_c.execute("INSERT INTO tests VALUES (?,?,?)", (test_id, 0, 0))
 
-    #  send_dataThread = Thread( target = send_function, args = (test_id))
-    #  send_dataThread.start()
-    send_function(test_id)
+    send_dataThread = Thread( target = send_function, args = (str(test_id)))
+    send_dataThread.start()
+    #  send_function(test_id)
     return json.dumps({"test_id": test_id})
 
 @app.route("/upload_record", methods = ['POST'])

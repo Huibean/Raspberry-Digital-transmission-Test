@@ -55,7 +55,7 @@ def receive_function(cluster_id):
                 test_id, index, former_time, pack_data = data.decode("utf-8").split("-")
                 delay = cal_delay(former_time, later_time)
 
-                write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay), cluster_id)
+                write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                 write_record_thread.start()
             except Exception as e:
                 pass
