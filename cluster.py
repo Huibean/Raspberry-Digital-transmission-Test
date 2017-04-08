@@ -58,9 +58,10 @@ def receive_function(cluster_id):
                 write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                 write_record_thread.start()
             except Exception as e:
-                pass
+                print("异常关闭！")
                 cluster.close()
                 receive_function(cluster_id)
+                raise e
                 #  receive_dataThread = Thread( target = receive_function, args = ())
                 #  receive_dataThread.start()
 

@@ -9,6 +9,9 @@ from threading import Thread
 database_connection = sqlite3.connect('transmission_test_master.db')
 app_c = database_connection.cursor() 
 
+app_c.execute('''CREATE TABLE IF NOT EXISTS tests (id integer, delay real, loss real)''')
+app_c.execute('''CREATE TABLE IF NOT EXISTS records (test_id integer, message_index integer, delay real, cluster_id integer)''')
+
 #  try:
     #  app_c.execute('''CREATE TABLE IF NOT EXISTS tests (id integer, delay real, loss real)''')
     #  app_c.execute('''CREATE TABLE IF NOT EXISTS records (test_id integer, index integer, delay real, cluster_id)''')
@@ -62,16 +65,16 @@ def run_test():
 @app.route("/upload_record", methods = ['POST'])
 
 def upload_record():
-    print(request.args)
     try:
         test_id = request.args.get('test_id')
         index = request.args.get('index')
         delay = request.args.get('delay')
         cluster_id = request.args.get('cluster_id')
         print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, " cluster_id:", cluster_id)
-        app_c.execute("INSERT INTO records VALUES (?,?,?)", (test_id, index, delay, cluster_id))
+        app_c.execute("INSERT INTO records VALUES (?,?,?,?)", (test_id, index, delay, cluster_id))
         return "success"
     except Exception as e:
+        raise e
         return "fail"
 
 if __name__ == "__main__":
