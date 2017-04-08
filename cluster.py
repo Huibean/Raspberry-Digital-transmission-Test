@@ -55,3 +55,5 @@ def receive_function():
                 pass
                 #  receive_dataThread = Thread( target = receive_function, args = ())
                 #  receive_dataThread.start()
+
+receive_function()
