@@ -10,3 +10,5 @@ sudo pip3 install Flask
 sudo pip3 install requests
 sudo pip3 install pyyaml
 git clone https://github.com/Huibean/Raspberry-Digital-transmission-Test.git
+cd Raspberry-Digital-transmission-Test
+cp config.yml.example config.yml
