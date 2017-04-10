@@ -75,13 +75,15 @@ def get_records(test_id):
 
 def run_test():
     test_id = len(list(tests.find())) + 1
+    title = request.values.get('title')
+    print("开始测试...")
 
-    tests.insert_one({"test_id": test_id})
+    tests.insert_one({"test_id": test_id, "title": title})
 
     send_dataThread = Thread( target = send_function, args = (str(test_id)))
     send_dataThread.start()
 
-    # send_function(test_id)
+    #  send_function(test_id)
 
     return redirect(url_for('index'))
 

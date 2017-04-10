@@ -8,6 +8,7 @@ $(document).ready(function() {
 
   $(".container").each(function() {
     var testId = $(this).data("test-id")
+    var testTitle = $(this).data("test-title")
     console.log(testId)
     var get_records_url = "/get_records/" + testId
     $.ajax({
@@ -24,7 +25,7 @@ $(document).ready(function() {
         console.log(data)
         window.data = data
         var containerId = 'container-' + testId
-        var titleText = '数传测试 - ' + testId
+        var titleText = '数传测试 - ' + testId + " (" + testTitle +")"
 
         var series_data = data
 

@@ -9,15 +9,14 @@
     <script src="{{ url_for('static', filename = 'jquery-3.2.0.min.js') }}"></script>
   </head>
   <body>
-      <div style="width:100%; height:10px;">
-      </div>
-      <div style="width:100%; height:70px; display: flex; justify-content: center;">
-        <form action="run_test" method="get" accept-charset="utf-8">
-          <button class="w3-button w3-white w3-border w3-border-blue w3-round-large" type="submit">发起新测试</button>
-        </form>
-      </div>
+    <form style="display: flex; justify-content: center; flex-direction: row; margin-top: 10px; margin-bottom: 20px" class="w3-container" action="run_test" method="get" accept-charset="utf-8">
+      <div style="flex: 3"></div>
+      <input class="w3-input" style="flex:4" type="text" value="" name="title" placeholder="备注"/>
+      <button class="w3-button w3-white w3-border w3-border-blue w3-round-large" style="flex:1"  type="submit">发起新测试</button>
+      <div style="flex: 3"></div>
+    </form>
     {% for test in tests %}
-      <div id={{"container-%s"%test['test_id'] }} data-test-id= {{"%s"%test['test_id']}} class="container" style="width:100%; height:300px;">Loading...</div>
+    <div id={{"container-%s"%test['test_id'] }} data-test-id= {{"%s"%test['test_id']}} data-test-title={{"%s"%test['title']}} class="container" style="width:100%; height:300px;">Loading...</div>
     {% endfor %}
 
     <script src="{{ url_for('static', filename = 'data.js') }}"></script>
