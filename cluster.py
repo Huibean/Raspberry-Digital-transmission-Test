@@ -87,6 +87,8 @@ def receive_function(cluster_id):
                 if len(data) == 0:
                     idle_count += 1
                     if idle_count > 100000:
+                        print("无数据接受，进入休眠...")
+                        idle_count = 0
                         break
 
                 if len(data_buffer.head) < 4:
