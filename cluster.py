@@ -104,7 +104,6 @@ def receive_function(cluster_id):
             records_to_insert = []
 
             while True:
-                GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
                 data = cluster.read()
 
                 if len(data) == 0:
@@ -122,6 +121,7 @@ def receive_function(cluster_id):
                         break
 
                 if len(data_buffer.head) < 4:
+                    GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
                     data_buffer.head += data
                     data_buffer.content = b''
                     data_buffer.end = b''
