@@ -5,6 +5,7 @@ import time
 from threading import Thread
 import requests
 import yaml
+import os
 
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
@@ -16,6 +17,11 @@ serial_port = cfg['serial_port']
 
 upload_record_path = master_server + "upload_record"
 
+def time_correct():
+    os.popen("sudo /etc/init.d/ntp restart")
+
+time_correct_thread = Thread( target = time_correct, args = ())
+time_correct_thread.start()
 
 def write_record(test_id, index, delay, cluster_id):
     print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
