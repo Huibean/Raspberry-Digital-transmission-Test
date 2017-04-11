@@ -18,7 +18,8 @@ serial_port = cfg['serial_port']
 upload_record_path = master_server + "upload_record"
 
 def time_correct():
-    os.popen("sudo /etc/init.d/ntp restart")
+    while True:
+        os.popen("sudo /etc/init.d/ntp restart")
 
 time_correct_thread = Thread( target = time_correct, args = ())
 time_correct_thread.start()
