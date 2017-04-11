@@ -76,6 +76,7 @@ def get_records(test_id):
 @app.route("/run_test", methods = ['GET'])
 
 def run_test():
+    os.popen("sudo /etc/init.d/ntp restart")
     test_id = len(list(tests.find())) + 1
     title = request.values.get('title')
     print("开始测试...")
