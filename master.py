@@ -24,7 +24,7 @@ def send_function(test_id):
     read_frequency = 0.1
     master = serial.Serial(serial_port, '38400', timeout = read_frequency, writeTimeout = 0)
     master.write(b'9527')
-
+    time.sleep(3)
     master.flushOutput()
     print("初始化主机串口...")
     i = 1

@@ -75,10 +75,9 @@ def receive_function(cluster_id):
         if confirm_test_message == b'9527':
             print("接受到确认数据:", confirm_test_message)
             print("测试就绪!")
+            cluster.flushInput()
 
             idle_count = 0
-
-            cluster.flushInput()
 
             data_buffer = DataBuffer()
 
@@ -90,12 +89,15 @@ def receive_function(cluster_id):
                     data_buffer.content = b''
                     data_buffer.end = b''
                 elif data_buffer.head_correct():
+                    print("confirm head:", data_buffer.head)
                     if len(data_buffer.content) < 62:
                         data_buffer.content += data
                     elif len(data_buffer.content) == 62:
+                        print("confirm content:", data_buffer.content)
                         if len(data_buffer.end) < 4:
                             data_buffer.end += data
                         elif data_buffer.is_end():
+                            print("confirm end:", data_buffer.end)
 
                             later_time = datetime.datetime.now().strftime('%M:%S.%f')
                             try:
@@ -104,12 +106,12 @@ def receive_function(cluster_id):
 
                                 write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                                 write_record_thread.start()
+                                data_buffer.clear()
                             except Exception as e:
                                 print("异常关闭！")
                                 cluster.close()
                                 receive_function(cluster_id)
                                 raise e
-                            data_buffer.clear()
 
                         else:
                             pass
