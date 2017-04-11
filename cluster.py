@@ -94,7 +94,7 @@ def receive_function(cluster_id):
 
             try:
                 result = os.popen("ntpq -p").read()
-                system_offset = float(result.split()[-3])   
+                system_offset = float(result.split()[-2])   
                 print("系统时钟延迟: %s ms"%system_offset)
                 system_delay = system_offset * 0.001
             except Exception as e:
@@ -131,7 +131,7 @@ def receive_function(cluster_id):
                             print("confirm end:", data_buffer.end)
                             try:
                                 test_id, index, former_time, pack_data = data_buffer.content.decode("utf-8").split("-")
-                                delay = cal_delay(former_time, later_time) - system_delay
+                                delay = cal_delay(former_time, later_time) + system_delay
 
                                 write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                                 write_record_thread.start()
