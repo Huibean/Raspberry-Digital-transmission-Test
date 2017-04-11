@@ -106,8 +106,14 @@ def receive_function(cluster_id):
                 if len(data) == 0:
                     idle_count += 1
                     if idle_count > 100:
-                        write_record_thread = Thread( target = write_records, args = (records_to_insert))
-                        write_record_thread.start()
+                        print("处理请求写入数据: ", records_to_insert)
+                        try:
+                            records.insert_many(records_to_insert)
+                            print("写入数据完成")
+                            records_to_insert = []
+                        except Exception as e:
+                            raise e
+
                         print("无数据接受，进入休眠...")
                         idle_count = 0
                         break
