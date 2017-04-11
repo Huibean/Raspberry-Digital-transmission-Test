@@ -31,7 +31,7 @@ def send_function(test_id):
     while True:
         time_now = datetime.datetime.now().strftime('%M:%S.%f')
         data = "0000" + str(test_id) + "-" + str(i) + "-" + time_now + "-"
-        for item in range(62 - len(data)):
+        for item in range(66 - len(data)):
             data += "x"
         data += "9999"
 
