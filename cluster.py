@@ -94,7 +94,8 @@ def receive_function(cluster_id):
 
             try:
                 result = os.popen("ntpq -p").read()
-                system_offset = float(result.split()[-2])   
+                system_offset = float(result.split()[-3])   
+                print("系统时钟延迟: %s ms"%system_offset)
                 system_delay = system_offset * 0.01
             except Exception as e:
                 raise e
