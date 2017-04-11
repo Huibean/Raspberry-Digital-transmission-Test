@@ -87,6 +87,7 @@ def receive_function(cluster_id):
             system_delay = 0.0
 
             try:
+                os.popen("sudo /etc/init.d/ntp restart")
                 result = os.popen("ntpq -p").read()
                 system_offset = float(result.split()[-2])   
                 print("系统时钟延迟: %s ms"%system_offset)
