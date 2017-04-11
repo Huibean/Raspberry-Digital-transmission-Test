@@ -3,6 +3,7 @@ import serial
 import datetime
 import time
 from threading import Thread
+from pymongo import MongoClient
 import requests
 import yaml
 import os
