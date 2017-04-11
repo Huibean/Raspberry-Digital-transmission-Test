@@ -89,17 +89,16 @@ def receive_function(cluster_id):
                     data_buffer.content = b''
                     data_buffer.end = b''
                 elif data_buffer.head_correct():
-                    print("confirm head:", data_buffer.head)
                     if len(data_buffer.content) < 62:
                         data_buffer.content += data
                     elif len(data_buffer.content) == 62:
-                        print("confirm content:", data_buffer.content)
                         if len(data_buffer.end) < 4:
                             data_buffer.end += data
                         elif data_buffer.is_end():
-                            print("confirm end:", data_buffer.end)
-
                             later_time = datetime.datetime.now().strftime('%M:%S.%f')
+                            print("confirm head:", data_buffer.head)
+                            print("confirm content:", data_buffer.content)
+                            print("confirm end:", data_buffer.end)
                             try:
                                 test_id, index, former_time, pack_data = data_buffer.content.decode("utf-8").split("-")
                                 delay = cal_delay(former_time, later_time)
@@ -107,6 +106,7 @@ def receive_function(cluster_id):
                                 write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                                 write_record_thread.start()
                                 data_buffer.clear()
+                                data_buffer.head += data
                             except Exception as e:
                                 print("异常关闭！")
                                 cluster.close()
