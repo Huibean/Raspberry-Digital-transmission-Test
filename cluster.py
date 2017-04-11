@@ -77,7 +77,6 @@ def receive_function(cluster_id):
 
     cluster.flushInput()
 
-
     while True:
         confirm_test_message = cluster.read(4)
 
@@ -108,13 +107,12 @@ def receive_function(cluster_id):
                     if idle_count > 100:
                         print("处理请求写入数据: ", records_to_insert)
                         try:
-                            records.insert_many(records_to_insert)
+                            db.records.insert_many(records_to_insert)
                             print("写入数据完成")
-                            records_to_insert = []
                         except Exception as e:
                             raise e
 
-                        print("无数据接受，进入休眠...")
+                        print("无数据接收，进入休眠...")
                         idle_count = 0
                         break
 
@@ -137,7 +135,7 @@ def receive_function(cluster_id):
                                 test_id, index, former_time, pack_data = data_buffer.content.decode("utf-8").split("-")
                                 delay = cal_delay(former_time, later_time) + system_delay
 
-                                records_to_insert.append({"test_id": test_id, "message_index": index, "delay": delay, "cluster_id": cluster_id})
+                                records_to_insert.append({"test_id": int(test_id), "message_index": int(index), "delay": delay, "cluster_id": int(cluster_id)})
 
                                 #  write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                                 #  write_record_thread.start()
