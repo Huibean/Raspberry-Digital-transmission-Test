@@ -38,7 +38,7 @@ def send_function(test_id):
         master.write(data.encode("UTF-8"))
         time.sleep(0.05)
         i += 1
-        print("发送 NO." + str(i))
+        print("发送 NO." + str(i) + " " + str(data))
         if i >= 100:
             break
         
