@@ -6,6 +6,7 @@ import json
 from pymongo import MongoClient
 from threading import Thread
 import yaml
+import os
 
 clusters = ['1', '2', '3', '4']
 
