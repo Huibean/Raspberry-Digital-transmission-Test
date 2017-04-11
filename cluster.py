@@ -24,13 +24,13 @@ records = db.records
 
 upload_record_path = master_server + "upload_record"
 
+#  def time_correct():
+    #  while True:
+        #  os.popen("sudo /etc/init.d/ntp restart")
+        #  time.sleep(0.1)
 
-def time_correct():
-    while True:
-        os.popen("sudo /etc/init.d/ntp restart")
-
-time_correct_thread = Thread( target = time_correct, args = ())
-time_correct_thread.start()
+#  time_correct_thread = Thread( target = time_correct, args = ())
+#  time_correct_thread.start()
 
 def write_record(test_id, index, delay, cluster_id):
 
@@ -85,6 +85,7 @@ def receive_function(cluster_id):
 
     while True:
         confirm_test_message = cluster.read(4)
+        os.popen("sudo /etc/init.d/ntp restart")
 
         if confirm_test_message == b'9527':
             print("接受到确认数据:", confirm_test_message)
