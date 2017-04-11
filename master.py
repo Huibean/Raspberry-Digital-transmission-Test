@@ -23,18 +23,20 @@ records = db.records
 def send_function(test_id):
     read_frequency = 0.1
     master = serial.Serial(serial_port, '38400', timeout = read_frequency, writeTimeout = 0)
+    master.write(b'9527')
 
     master.flushOutput()
     print("初始化主机串口...")
     i = 1
     while True:
         time_now = datetime.datetime.now().strftime('%M:%S.%f')
-        data = str(test_id) + "-" + str(i) + "-" + time_now + "-"
-        for item in range(70 - len(data)):
-            data += "0"
+        data = "0000" + str(test_id) + "-" + str(i) + "-" + time_now + "-"
+        for item in range(62 - len(data)):
+            data += "x"
+        data += "9999"
 
         master.write(data.encode("UTF-8"))
-        time.sleep(0.1)
+        time.sleep(0.05)
         i += 1
         print("发送 NO." + str(i))
         if i >= 100:
