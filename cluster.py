@@ -24,23 +24,17 @@ records = db.records
 
 upload_record_path = master_server + "upload_record"
 
-#  def time_correct():
-    #  while True:
-        #  os.popen("sudo /etc/init.d/ntp restart")
-        #  time.sleep(0.1)
-
-#  time_correct_thread = Thread( target = time_correct, args = ())
-#  time_correct_thread.start()
-
 def write_record(test_id, index, delay, cluster_id):
-
-    #  print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
-    #  r = requests.post(upload_record_path, params={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
-    #  print("写入结果", r.status_code, r.content)
-
     try:
         print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, " cluster_id:", cluster_id)
         records.insert_one({"test_id": test_id, "message_index": index, "delay": delay, "cluster_id": cluster_id})
+    except Exception as e:
+        raise e
+
+def write_records(records_to_insert):
+    try:
+        print("处理请求写入数据: ", records_to_insert)
+        records.insert_many(records_to_insert)
     except Exception as e:
         raise e
 
@@ -83,6 +77,7 @@ def receive_function(cluster_id):
 
     cluster.flushInput()
 
+
     while True:
         confirm_test_message = cluster.read(4)
 
@@ -103,6 +98,7 @@ def receive_function(cluster_id):
             idle_count = 0
 
             data_buffer = DataBuffer()
+            records_to_insert = []
 
             while True:
                 data = cluster.read()
@@ -110,6 +106,8 @@ def receive_function(cluster_id):
                 if len(data) == 0:
                     idle_count += 1
                     if idle_count > 100:
+                        write_record_thread = Thread( target = write_records, args = (records_to_insert))
+                        write_record_thread.start()
                         print("无数据接受，进入休眠...")
                         idle_count = 0
                         break
@@ -133,8 +131,10 @@ def receive_function(cluster_id):
                                 test_id, index, former_time, pack_data = data_buffer.content.decode("utf-8").split("-")
                                 delay = cal_delay(former_time, later_time) + system_delay
 
-                                write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
-                                write_record_thread.start()
+                                records_to_insert.append({"test_id": test_id, "message_index": index, "delay": delay, "cluster_id": cluster_id})
+
+                                #  write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
+                                #  write_record_thread.start()
                                 data_buffer.clear()
                                 data_buffer.head += data
                             except Exception as e:
