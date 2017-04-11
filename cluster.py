@@ -7,6 +7,9 @@ from pymongo import MongoClient
 import requests
 import yaml
 import os
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
 
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
@@ -101,6 +104,7 @@ def receive_function(cluster_id):
             records_to_insert = []
 
             while True:
+                GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
                 data = cluster.read()
 
                 if len(data) == 0:
@@ -129,6 +133,7 @@ def receive_function(cluster_id):
                             data_buffer.end += data
                         elif data_buffer.is_end():
                             later_time = datetime.datetime.now().strftime('%M:%S.%f')
+                            GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
                             print("confirm head:", data_buffer.head)
                             print("confirm content:", data_buffer.content)
                             print("confirm end:", data_buffer.end)
