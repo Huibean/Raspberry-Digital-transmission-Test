@@ -64,7 +64,7 @@ def get_records(test_id):
     data = []
     for cluster_id in clusters:
         cluster_item = { 'name': "Cluster %s"%cluster_id, 'data': [None for i in range(100)]}
-        records = list(db.records.find({'test_id': test_id, 'cluster_id': cluster_id}))
+        records = list(db.records.find({'test_id': int(test_id), 'cluster_id': int(cluster_id)}))
         for record in records:
             cluster_item['data'][int(record['message_index']) - 1] = float(record['delay'])
         data.append(cluster_item)
