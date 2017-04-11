@@ -85,12 +85,19 @@ def receive_function(cluster_id):
 
     while True:
         confirm_test_message = cluster.read(4)
-        os.popen("sudo /etc/init.d/ntp restart")
 
         if confirm_test_message == b'9527':
             print("接受到确认数据:", confirm_test_message)
             print("测试就绪!")
             cluster.flushInput()
+            system_delay = 0.0
+
+            try:
+                result = os.popen("ntpq -p").read()
+                system_offset = float(result.split()[-2])   
+                system_delay = system_offset * 0.01
+            except Exception as e:
+                raise e
 
             idle_count = 0
 
@@ -123,7 +130,7 @@ def receive_function(cluster_id):
                             print("confirm end:", data_buffer.end)
                             try:
                                 test_id, index, former_time, pack_data = data_buffer.content.decode("utf-8").split("-")
-                                delay = cal_delay(former_time, later_time)
+                                delay = cal_delay(former_time, later_time) + system_delay
 
                                 write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
                                 write_record_thread.start()
