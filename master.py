@@ -82,11 +82,6 @@ def run_test():
 
     tests.insert_one({"test_id": test_id, "title": title})
 
-    #  send_dataThread = Thread( target = send_function, args = (str(test_id)))
-    #  send_dataThread.start()
-
-    #  time.sleep(5)
-
     send_function(test_id)
 
     return redirect(url_for('index'))

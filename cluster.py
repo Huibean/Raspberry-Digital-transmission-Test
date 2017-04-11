@@ -15,6 +15,12 @@ cluster_id = cfg['cluster_id']
 master_server = cfg['master_server']
 serial_port = cfg['serial_port']
 
+mongodb_url = cfg['mongodb_url']
+client = MongoClient(mongodb_url)
+db = client['raspberry_transmission_test']
+tests = db.tests
+records = db.records
+
 upload_record_path = master_server + "upload_record"
 
 
@@ -26,9 +32,16 @@ time_correct_thread = Thread( target = time_correct, args = ())
 time_correct_thread.start()
 
 def write_record(test_id, index, delay, cluster_id):
-    print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
-    r = requests.post(upload_record_path, params={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
-    print("写入结果", r.status_code, r.content)
+
+    #  print("请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, "cluster_id: ", cluster_id)
+    #  r = requests.post(upload_record_path, params={"test_id": test_id, "index": index, "delay": delay, "cluster_id": cluster_id})
+    #  print("写入结果", r.status_code, r.content)
+
+    try:
+        print("处理请求写入数据, test id: ", test_id, "index: ", index, " delay: ", delay, " cluster_id:", cluster_id)
+        records.insert_one({"test_id": test_id, "message_index": index, "delay": delay, "cluster_id": cluster_id})
+    except Exception as e:
+        raise e
 
 def cal_delay(former_time, later_time):
     former_m, former_s = map(lambda item: float(item), former_time.split(":")) 
@@ -119,26 +132,11 @@ def receive_function(cluster_id):
                                 cluster.close()
                                 receive_function(cluster_id)
                                 raise e
-
                         else:
-                            pass
+                            data_buffer.clear()
                     else:
-                        pass
+                        data_buffer.clear()
                 else:
                     data_buffer.clear()
-
-                #  if (len(data) == 70):
-                    #  later_time = datetime.datetime.now().strftime('%M:%S.%f')
-                    #  try:
-                        #  test_id, index, former_time, pack_data = data.decode("utf-8").split("-")
-                        #  delay = cal_delay(former_time, later_time)
-
-                        #  write_record_thread = Thread( target = write_record, args = (int(test_id), index, delay, cluster_id))
-                        #  write_record_thread.start()
-                    #  except Exception as e:
-                        #  print("异常关闭！")
-                        #  cluster.close()
-                        #  receive_function(cluster_id)
-                        #  raise e
 
 receive_function(cluster_id)
