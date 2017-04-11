@@ -84,6 +84,11 @@ def receive_function(cluster_id):
             while True:
                 data = cluster.read()
 
+                if len(data) == 0:
+                    idle_count += 1
+                    if idle_count > 100000:
+                        break
+
                 if len(data_buffer.head) < 4:
                     data_buffer.head += data
                     data_buffer.content = b''
