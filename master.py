@@ -48,7 +48,7 @@ def send_function(test_id):
 
 app = Flask(__name__, static_folder='public')
 
-@app.route("/", methods = ['GET'])
+@app.route("/tests", methods = ['GET'])
 
 def index():
     tests = list(db.tests.find())
@@ -57,6 +57,20 @@ def index():
     print("加载测试结果", tests)
 
     return render_template('index.html', tests=tests)
+
+@app.route("/", methods = ['GET'])
+
+def home_page():
+    return render_template('home_page.html')
+
+@app.route("/tests/<id>", methods = ['GET'])
+
+def show(id):
+    test = db.tests.find_one({'test_id': 1})
+
+    print("加载测试结果", test)
+
+    return render_template('show.html', test=test)
 
 @app.route("/get_records/<test_id>", methods = ['GET'])
 
@@ -77,8 +91,7 @@ def get_records(test_id):
 @app.route("/run_test", methods = ['GET'])
 
 def run_test():
-    os.popen("sudo /etc/init.d/ntp restart")
-    test_id = len(list(tests.find())) + 1
+    test_id = db.tests.find().count() + 1
     title = request.values.get('title')
     print("开始测试...")
 
@@ -86,7 +99,7 @@ def run_test():
 
     send_function(test_id)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('show', id=test_id))
 
 @app.route("/upload_record", methods = ['POST'])
 

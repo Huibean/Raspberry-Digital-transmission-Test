@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>SkyPix 数传测试</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'w3.css') }}">
+    <script src="{{ url_for('static', filename = 'highcharts.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'jquery-3.2.0.min.js') }}"></script>
+  </head>
+  <body>
+    <div id={{"container-%s"%test['test_id'] }} data-test-id= {{"%s"%test['test_id']}} data-test-title={{"%s"%test['title']}} class="container" style="width:100%; height:300px;">Loading...</div>
+
+    <script src="{{ url_for('static', filename = 'data.js') }}"></script>
+  </body>
+</html>
