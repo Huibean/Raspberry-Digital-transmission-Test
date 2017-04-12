@@ -9,10 +9,6 @@ import yaml
 import os
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(26, GPIO.OUT)
-p = GPIO.PWM(26, 0.5)
-
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
@@ -123,7 +119,6 @@ def receive_function(cluster_id):
                         break
 
                 if len(data_buffer.head) < 4:
-                    p.start(1)
                     data_buffer.head += data
                     data_buffer.content = b''
                     data_buffer.end = b''
@@ -135,8 +130,6 @@ def receive_function(cluster_id):
                             data_buffer.end += data
                         elif data_buffer.is_end():
                             later_time = datetime.datetime.now().strftime('%M:%S.%f')
-                            p.stop()
-                            GPIO.cleanup()
                             print("confirm head:", data_buffer.head)
                             print("confirm content:", data_buffer.content)
                             print("confirm end:", data_buffer.end)
