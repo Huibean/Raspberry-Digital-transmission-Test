@@ -72,7 +72,7 @@ class DataBuffer(object):
 
 def receive_function(cluster_id):
     print("初始化串口...")
-    read_frequency = 0.05
+    read_frequency = 0.02
     cluster = serial.Serial('/dev/ttyAMA0', '38400', timeout = read_frequency, writeTimeout = 0)
 
     cluster.flushInput()
