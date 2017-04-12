@@ -7,7 +7,6 @@ from pymongo import MongoClient
 import requests
 import yaml
 import os
-import RPi.GPIO as GPIO
 
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
