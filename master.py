@@ -66,7 +66,7 @@ def home_page():
 @app.route("/tests/<id>", methods = ['GET'])
 
 def show(id):
-    test = db.tests.find_one({'test_id': 1})
+    test = db.tests.find_one({'test_id': id})
 
     print("加载测试结果", test)
 
